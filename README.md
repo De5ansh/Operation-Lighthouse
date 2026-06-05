@@ -1,4 +1,4 @@
-# Operation Lighthouse: Shoreline Defense
+# Operation Lighthouse
 
 An arcade-inspired, high-energy tactical tower defense and resource-management game built in Unity 6 using the Universal Render Pipeline (URP). Take on the role of an outpost supplier, scavenge wreckage on the beach, manage your inventory limits under pressure, and automate a high-powered defense network to hold back waves of aggressive slimes!
 
