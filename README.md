@@ -50,4 +50,3 @@ An arcade-inspired, high-energy tactical tower defense and resource-management g
 * `Assets/Scripts/MainMenuManager.cs` - Drives the corner loading slider calculations and scene index jumps.
 
 ---
-*Developed as a standalone prototype deployment for the final project review.*
