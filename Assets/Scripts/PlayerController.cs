@@ -5,13 +5,16 @@ public class PlayerController : MonoBehaviour
 {
     PlayerInput playerInput;
     InputAction moveAction;
+    InputAction pauseAction;
     Animator anim;
-    
+
+    [Header("Pause UI Connection")]
+    public PauseMenu pauseMenuScript;
+
     [Header("Movement Settings")]
     public float baseSpeed = 5f; 
 
     [Header("Map Boundary Limits")]
-    // Customize these numbers in the Inspector to fit your map layout perfectly!
     public float minX = -20f;
     public float maxX = 20f;
     public float minZ = -20f;
@@ -24,37 +27,50 @@ public class PlayerController : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
         moveAction = playerInput.actions.FindAction("move"); 
+        pauseAction = playerInput.actions.FindAction("pause");
         anim = GetComponentInChildren<Animator>();
     }
 
     void Update()
     {
+        if (PauseMenu.isPaused)
+        {
+            // If they press Escape while paused, resume the match!
+            if (pauseAction != null && pauseAction.WasPressedThisFrame())
+            {
+                pauseMenuScript.TogglePause();
+            }
+            return; 
+        }
+
         MovePlayer();
+        
+        if (pauseAction != null && pauseAction.WasPressedThisFrame())
+        {
+            if (pauseMenuScript != null)
+            {
+                pauseMenuScript.TogglePause();
+            }
+        }
     }
 
     void MovePlayer()
     {
         Vector2 direction = moveAction.ReadValue<Vector2>();
         
-        // 1. Calculate the intended next movement position
         Vector3 movement = new Vector3(direction.x, 0, direction.y) * baseSpeed * Time.deltaTime; 
         transform.position += movement;
 
-        // 2. BOUNDARY CLAMPING LOGIC
-        // This forces the player's position to strictly stay within your min and max boxes!
         float clampedX = Mathf.Clamp(transform.position.x, minX, maxX);
         float clampedZ = Mathf.Clamp(transform.position.z, minZ, maxZ);
 
-        // 3. Apply the clamped position back to the player transform (keeping Y exactly where it is)
         transform.position = new Vector3(clampedX, transform.position.y, clampedZ);
 
-        // Handle animation parameters
         if (anim != null)
         {
             anim.SetFloat("Speed", direction.magnitude);
         }
 
-        // Handle rotational direction look loops
         if (direction.magnitude > 0)
         {
             Vector3 targetDir = new Vector3(direction.x, 0, direction.y);

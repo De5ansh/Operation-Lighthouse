@@ -20,16 +20,15 @@ public class GameHUD : MonoBehaviour
 
     void Start()
     {
-        // Safety verification check
         if (playerInventory == null || towerInventory == null || towerHealth == null)
         {
-            Debug.LogError("GameHUD Error: Please assign all script data references in the Inspector slots!");
+            Debug.LogError("GameHUD Error: Assign all script data references in the Inspector slots!");
         }
     }
 
     void Update()
     {
-        // 1. Refresh Player Carrying Display (X / Y format)
+
         if (waveManager != null && waveText != null)
         {
             waveText.text = $"Wave {waveManager.waveNumber}";
@@ -39,13 +38,11 @@ public class GameHUD : MonoBehaviour
             playerScrapText.text = $"Scrap Carrying: {playerInventory.currentScrap} / {playerInventory.maxCarryCapacity}";
         }
 
-        // 2. Refresh Tower Vault Milestone Progress
         if (towerInventory != null && towerScrapText != null)
         {
             towerScrapText.text = $"Tower Vault: {towerInventory.totalScrapStored} / {towerInventory.scrapRequiredForUpgrade}";
         }
 
-        // 3. Refresh Tower Health Data & Slider values
         if (towerHealth != null)
         {
             

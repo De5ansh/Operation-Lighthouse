@@ -8,13 +8,13 @@ public class WaveManager : MonoBehaviour
     {
         public string name;
         public GameObject prefab;
-        [Range(0, 100)] public float baseWeight; // Initial spawn probability weight
+        [Range(0, 100)] public float baseWeight; 
     }
 
     [Header("Enemy Prefabs")]
-    public EnemyData blueEnemy;  // Easiest
-    public EnemyData greenEnemy; // Medium
-    public EnemyData redEnemy;   // Hardest
+    public EnemyData blueEnemy;  
+    public EnemyData greenEnemy; 
+    public EnemyData redEnemy;   
 
     [Header("Spawner Settings")]
     public Transform[] spawnPoints;
@@ -22,8 +22,8 @@ public class WaveManager : MonoBehaviour
     public float spawnEnemyInterval = 1.0f;
 
     [Header("Scaling Multipliers")]
-    public float healthMultiplierPerWave = 0.15f; // +15% enemy health per wave
-    public float speedMultiplierPerWave = 0.05f;  // +5% enemy speed per wave
+    public float healthMultiplierPerWave = 0.15f; 
+    public float speedMultiplierPerWave = 0.05f;  
     public int enemyNumbers = 4;
 
     public int waveNumber = 1;
@@ -72,9 +72,6 @@ public class WaveManager : MonoBehaviour
         {
             enemiesToSpawn = 75;
         }
-        
-        
-        Debug.Log($"--- STARTING WAVE {waveNumber} ---");
 
         for (int i = 0; i < enemiesToSpawn; i++)
         {
@@ -87,13 +84,10 @@ public class WaveManager : MonoBehaviour
     {
         if (spawnPoints.Length == 0) return;
 
-        // 1. Calculate Dynamic Spawn Weights based on current Wave Number
-        // Blue weight decreases, Green rises, Red rises even faster later
         float currentBlueWeight = Mathf.Max(10f, blueEnemy.baseWeight - (waveNumber * 5f));
         float currentGreenWeight = greenEnemy.baseWeight + (waveNumber * 3f);
         float currentRedWeight = redEnemy.baseWeight + (waveNumber * 6f);
 
-        // Wave 1-2 lock safeguard: Make sure red doesn't accidentally show up instantly
         if (waveNumber < 3) currentRedWeight = 0;
         if (waveNumber < 2) currentGreenWeight = 0;
 
@@ -102,7 +96,6 @@ public class WaveManager : MonoBehaviour
 
         GameObject selectedPrefab = blueEnemy.prefab;
 
-        // 2. Select enemy based on weight calculation
         if (randomValue < currentBlueWeight)
         {
             selectedPrefab = blueEnemy.prefab;
@@ -116,17 +109,13 @@ public class WaveManager : MonoBehaviour
             selectedPrefab = redEnemy.prefab;
         }
 
-        // 3. Instantiate and apply stat modifiers
         Transform randomPoint = spawnPoints[Random.Range(0, spawnPoints.Length)];
         GameObject enemy = Instantiate(selectedPrefab, randomPoint.position, randomPoint.rotation);
         activeEnemies.Add(enemy);
 
-        // 4. Pass stat scaling directly to the enemy AI script
         EnemyAI enemyAI = enemy.GetComponent<EnemyAI>();
         if (enemyAI != null)
         {
-            // Base stats are scaled dynamically by the wave number
-            // Equation: Stat * (1 + (Wave * Multiplier))
             float healthModifier = 1f + (waveNumber * healthMultiplierPerWave);
             float speedModifier = 1f + (waveNumber * speedMultiplierPerWave);
             

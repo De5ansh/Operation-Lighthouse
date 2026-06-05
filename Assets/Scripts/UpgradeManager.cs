@@ -5,18 +5,18 @@ using System.Collections.Generic;
 public class UpgradeManager : MonoBehaviour
 {
     [Header("UI Elements")]
-    public GameObject upgradeCanvasObject; // Drag UpgradeUICanvas here
-    public TMP_Text[] buttonTexts;         // Drag the Text components of Button 1, 2, and 3 here
+    public GameObject upgradeCanvasObject; 
+    public TMP_Text[] buttonTexts;         
 
     [Header("Mini Towers To Activate")]
-    public GameObject smallTower1;        // Drag your unchecked Mini-Tower 1 object here
-    public GameObject smallTower2;        // Drag your unchecked Mini-Tower 2 object here
+    public GameObject smallTower1;        
+    public GameObject smallTower2;        
 
     [Header("MANUAL GAME OBJECT LINKS")]
-    // NEW: Manual drag-and-drop slots instead of using slower automatic code finding!
-    public TowerWeapon mainTowerWeapon;     // Drag your Central Main Tower here
-    public PlayerController playerMovement; // Drag your Player object here
-    public PlayerInventory playerInventory;   // Drag your Player object here too
+
+    public TowerWeapon mainTowerWeapon;     
+    public PlayerController playerMovement; 
+    public PlayerInventory playerInventory;   
 
     // Core upgrade tracker
     private enum UpgradeType { FireRate, AttackRange, PlayerSpeed, ProjectileDamage, MiniTower, PlayerCapacity, MiniTowerDamage }
@@ -35,7 +35,7 @@ public class UpgradeManager : MonoBehaviour
         // SAFETY CHECK: Warns you instantly in the editor if you forgot a critical link!
         if (mainTowerWeapon == null || playerMovement == null || playerInventory == null)
         {
-            Debug.LogError("CRITICAL: You forgot to drag the Main Tower or Player references into the UpgradeManager Inspector fields!");
+            Debug.LogError("CRITICAL: Drag the Main Tower or Player references into the UpgradeManager Inspector fields!");
         }
     }
 
@@ -51,7 +51,6 @@ public class UpgradeManager : MonoBehaviour
         currentChoices.Clear();
         List<UpgradeType> availablePool = new List<UpgradeType>();
 
-        // 1. FILTER POOL: Build deck based on direct, reliable object references
         if (mainTowerWeapon != null && mainTowerWeapon.fireRate < 5f)
             availablePool.Add(UpgradeType.FireRate);
 
@@ -67,7 +66,6 @@ public class UpgradeManager : MonoBehaviour
         if (playerInventory != null && playerInventory.maxCarryCapacity < 30)
             availablePool.Add(UpgradeType.PlayerCapacity);
 
-        // Mini tower validation switch
         bool tower1Active = smallTower1 != null && smallTower1.activeSelf;
         bool tower2Active = smallTower2 != null && smallTower2.activeSelf;
 
@@ -86,7 +84,6 @@ public class UpgradeManager : MonoBehaviour
             }
         }
 
-        // 2. GENERATE THE CARDS ON SCREEN
         for (int i = 0; i < 3; i++)
         {
             UnityEngine.UI.Button buttonComponent = buttonTexts[i].gameObject.GetComponentInParent<UnityEngine.UI.Button>();
